@@ -2,7 +2,7 @@
 
 ## Attributes
 
-###Create an attribute– POST / attributes
+### Create an attribute– POST / attributes
 
 ```curl
 
@@ -26,7 +26,10 @@ curl --request POST \
 }
 
 ```
-###Update an attribute  – PUT / atributes/{name}
+
+CREATES A NEW PRODUCT ATTRIBUTE
+
+### Update an attribute  – PUT / atributes/{name}
 
 ```curl
 
@@ -51,6 +54,8 @@ curl --request PUT \
 
 ```
 
+UPDATES AN EXISTING ATTRIBUTE
+
 ## Categories
 
 ### List Categories – GET / categories
@@ -66,6 +71,8 @@ curl --request GET \
 --header 'x-user-email: ti@hariexpress.com.br'
 
 ```
+
+LISTS ALL CATEGORIES REGISTERED ON SKYHUB
 
 ### Create a category – POST / categories
 
@@ -87,6 +94,8 @@ curl --request POST \
 
 ```
 
+CREATES A CATEGORY ON SKYHUB
+
 ### Update Category – PUT / categories/{code}
 
 ```curl
@@ -106,6 +115,8 @@ curl --request PUT \
 }
 
 ```
+
+UPDATES ONLY ONE CATEGORY ON SKYHUB BY THE CATEGORY CODE
 
 ### Delete Category – DELETE / categories/{code}
 
@@ -127,6 +138,8 @@ curl --request DELETE \
 
 ```
 
+DELETES ONLY ONE CATEGORY ON SKYHUB BY THE CATEGORY CODE
+
 ## Freights
 
 ### Return the freights history – GET / freights
@@ -142,6 +155,8 @@ curl --request GET \
 --header 'x-user-email: ti@hariexpress.com.br'
 
 ```
+
+LISTS ALL FREIGHTS
 
 ## Orders
 
@@ -159,6 +174,8 @@ curl --request GET \
 
 ```
 
+LISTS ALL ORDERS REGISTERED ON SKYHUB
+
 ### Returns a specific order – GET / orders/{code}
 
 ```curl
@@ -172,6 +189,8 @@ curl --request GET \
 --header 'x-user-email: ti@hariexpress.com.br '
 
 ```
+
+RETURNS ONLY ONE ORDER 
 
 ### Invoice – POST / orders/{code}/invoice
 
@@ -193,6 +212,8 @@ curl --request POST \
 
 ```
 
+UPDATES AN ORDER WITH INVOICE INFORMATION
+
 ### Cancel an order – POST / orders/{code}/cancel
 
 ```curl
@@ -210,6 +231,8 @@ curl --request POST \
 
 ```
 
+UPDATES AN ORDER WITH THE CANCELATION DATA
+
 ### Confirm Delivery – POST / orders/{code}/delivery
 
 ```curl
@@ -226,6 +249,8 @@ curl --request POST \
 }
 
 ```
+
+UPDATES AN ORDER AS DELIVERED ON SKYHUB
 
 ### Send delivery data – POST / orders/{code}/shipments
 
@@ -259,6 +284,8 @@ curl --request POST \
 
 ```
 
+UPDATES AN ORDER WITH THE TRACKING CODE DATA AND THE METHOD OF SHIPPING OF THE TRANSPORTER. (B2W accepts at maximum 200 characters in the URL of tracking).
+
 ### Gets shipping label – GET / orders/{code}/shipments_labels
 
 ```curl
@@ -272,6 +299,8 @@ curl --request GET \
 --header 'x-user-email: ti@hariexpress.com.br ' \
 
 ```
+
+OBTAINS THE LABEL OF AN ORDER THAT HAD THE FREIGHT CALCULATED VIA B2W DELIVERIES
 
 ### Transport exception – POST / orders/{code}/shipments_exception
 
@@ -293,6 +322,8 @@ curl --request POST \
 
 ```
 
+TRANSPORT EXCEPTION
+
 ## PLP
 
 ### List PLP’s – GET / shipments/b2w
@@ -308,6 +339,8 @@ curl --request GET \
 --header 'x-user-email: ti@hariexpress.com.br '
 
 ```
+
+FUNCTION THAT ALLOWS TO CHECK IN THE API ALL GROUPED PLPs. IN THE RETURN IT WILL BE POSSIBLE TO VERIFY THE ID OF THE PLP AND THE INSERTED ORDERS IN EACH GROUP.
 
 ### Grouping Orders in a PLP – POST / shipments/b2w
 
@@ -330,6 +363,8 @@ curl --request POST \
 
 ```
 
+RETURN ORDERS TO GROUP, JUST 20 ORDERS FOR PAGE
+
 ### Ungroup PLP – DELETE / shipments/b2w
 
 ```curl
@@ -347,6 +382,8 @@ curl --request DELETE \
 
 ```
 
+BASICALLY THE OPPOSITE OF THAT LAST OPERATION
+
 ### Recover PLP – PDF – GET / shipments/b2w/view?plp_id={CODE}
 
 ```curl
@@ -361,6 +398,8 @@ curl --request GET \
 
 ```
 
+FIRST YOU NEED TO GROUP THE PLPs, YOU WILL RECEIVE A ID AND USE IT IN THIS FUCTION. IF YOU WANT TO RECEIVE THE DATAS IN JSON FORMAT JUST USE THE HEADER Accept: application/json. 
+
 ### Order list apt for grouping – GET /shipments/b2w/to_group
 
 ```curl
@@ -374,6 +413,8 @@ curl --request GET \
 --header 'x-user-email: ti@hariexpress.com.br ' \
 
 ```
+
+RETURN THE PLP ID, WITH THE ID WILL BE NECESSARY RECOVER THE PLP
 
 ## Products 
 
@@ -391,6 +432,8 @@ curl --request GET \
 
 ```
 
+LIST ALL PRODUCTS REGISTERED ON SKYHUB
+
 ### Returns a specific product in the skyhub – GET / products/{sku}
 
 ```curl
@@ -404,6 +447,8 @@ curl --request GET \
 --header 'x-user-email: ti@hariexpress.com.br ' \
 
 ```
+
+GET ONLY ONE PRODUCT ACCORDING WITH THE SKU ID
 
 ### Create a product in the SkyHub – POST / products
 
@@ -475,6 +520,8 @@ curl --request POST \
 }
 
 ```
+
+CREATES A PRODUCT, THE DETAILS GOES ON THE BODY (B2W accepts up to 25 characters in sku)
 
 ### Update a product in the skyhub – PUT / products/{sku}
 
@@ -578,6 +625,8 @@ curl --request PUT \
 
 ```
 
+UPDATES A PRODUCT USING THE SKU ID
+
 ### Delete a product in the Skyhub – DELETE / products/{sku}
 
 ```curl
@@ -591,6 +640,8 @@ curl --request DELETE \
 --header 'x-user-email: ti@hariexpress.com.br'  \
 
 ```
+
+DELETES A PRODUCT ON SKYHUB USING THE SKU ID
 
 ### Create product variation in the Skyhub – POST / products/{sku}/variations
 
@@ -624,6 +675,8 @@ curl --request POST \
 
 ```
 
+CREATES PRODUCTS VARIATION USING THE SKU ID
+
 ### Marketplaces URL – GET / products/urls
 
 ```curl
@@ -637,6 +690,8 @@ curl --request GET \
 --header 'x-user-email: ti@hariexpress.com.br'  \
 
 ```
+
+RETURNS THE URL OF THE PRODUCTS IN THE MARKETPLACES (B2W AND CNOVA)
 
 ### CREATE A PRODUCT WITH PRICE VARIATION IN THE SKU – POST / products
 
@@ -709,6 +764,8 @@ curl --request POST \
 
 ```
 
+CREATES A PRODUCT WITH PRICE VARIATION IN THE SKU
+
 ## QUEUES 
 
 ### Receive a queue of orders – GET / queues/orders
@@ -724,6 +781,8 @@ curl --request GET \
 --header 'x-user-email: ti@hariexpress.com.br'  \
 
 ```
+
+RETRIEVES THE FIRST AVILABLE ORDER IN THE INTEGRATION QUEUE. AFTER PROCESSING THE ORDER, IT MUST BE REMOVED FROM THE INTEGRATION QUEUE WITHIN 5 MINUTES (OR IT WILL RETURN TO THE BEGINNING OF THE QUEUE).
 
 ### Remove a request from the queue – DELETE / queues/orders/{code}
 
@@ -744,3 +803,5 @@ curl --request DELETE \
 }
 
 ```
+
+REMOVES AN ORDER FROM THE INTEGRATION QUEUE
