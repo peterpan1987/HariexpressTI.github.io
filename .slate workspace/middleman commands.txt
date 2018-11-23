@@ -1,0 +1,15 @@
+Middleman vai agir como nossa plataforma local de testes.
+Ele vai ser a framework responsável por manter o servidor local rodando e compilar um documento web para fins de hospedagem.
+
+Para enviar comandos para o middleman, abra o cmd no diretório do projeto.
+Note que o middleman é um aplicação Ruby, então, tenha certeza que na raiz da pasta do projeto existe o arquivo GemFile.
+
+Para iniciar o servidor de teste local, digite:
+	bundle exec middleman server
+
+	Com o servidor de testes inicializado, não feche o cmd. Acesse http://localhost:4567/ para visualizar o documento.
+
+Para compilar o documento web, digite:
+	bundle exec middleman build --clean
+
+	Note que, se o middleman estiver inicializado, será necessário abrir um novo cmd para enviar novos comandos.
