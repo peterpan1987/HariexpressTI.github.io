@@ -40,6 +40,34 @@ html, body {
 // TABLE OF CONTENTS
 ////////////////////////////////////////////////////////////////////////////////
 
+
+// API Methods Tags
+#method {
+  padding-top:2px;
+  padding-bottom: 2px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin-right: 5px;
+  border-radius: 10px;
+  font-size: 10px;
+}
+
+.method-get {
+  background-color: #268d66;
+}
+
+.method-post {
+  background-color: #cd9309;
+}
+
+.method-put {
+  background-color: #0d72d7;
+}
+
+.method-del {
+  background-color: #aa3f3d;
+}
+
 #toc > ul > li > a > span {
   float: right;
   background-color: #2484FF;
@@ -171,6 +199,11 @@ html, body {
 
   .toc-h2 {
     padding-left: $nav-padding + $nav-indent;
+    font-size: 12px;
+  }
+
+  .toc-h3 {
+    padding-left: $nav-padding + $nav-indent + $nav-indent;
     font-size: 12px;
   }
 
