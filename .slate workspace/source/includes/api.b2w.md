@@ -1,15 +1,102 @@
 # B2W Marketplace
 
-Getting started to B2W API.
+## Authentication and data format
+
+### Authentication
+
+All calls to services available on the SkyHub - API must be authenticated from the user 's email, access token and accountmanager. This information should be sent in the header (header) of each request, as follows:
+
+* Authentication headers
+
+* X-User-Email: user_user
+
+* X-Api-Key: token_de_integracao
+
+* X-Accountmanager-Key: token_account
+
+Note: The X-Accountmanager-Key must be internal to your code, it is not necessary to request this information from your customer, since it is unique and already available with the test account.
+
+If you do not already have this information, please contact our support.
+
+### Data format
+
+When exchanging messages with SkyHub - API, the JavaScript Object Notation (JSON) standard will be used. Therefore, each request must contain the appropriate values in the Accept and Content-Type (application / json) headers.
+
+* Data format headers
+
+* Accept: application / json
+
+* Content-Type: application / json
+
+### Encoding (charset)
+
+The data sent (via POST or PUT) must conform to the UTF-8 charset.
+
+If a different encoding is used, an unsupported data type error (HTTP Status 415) is returned.
+
+IMPORTANT - Even if the "Accept" header indicates UTF-8 charset usage, if the body data is not in the correct encoding, HTTP 415 will also be returned.
+
+## Return codes (HTTP status)
+
+### SkyHub uses the default group of HTTP statuses to indicate whether a request was successful or not. In general:
+
+HTTP 2xx Codes: Indicate that the request was successful.
+
+HTTP Codes 4xx: indicate that the request contains some incorrect information - incorrect access data, absence of a required field, etc.
+
+HTTP 5xx Codes: Indicates an error on SkyHub's servers. These are rare, and if you receive this code, you should contact our support.
+
+### Errors
+
+Whenever an error occurs, the API returns in the body of the message a JSON with an error message according to the format below:
+
+{erro: "error message"};
+
+### Status HTTP
+
+The most commonly used HTTP statuses are:
+
+Status              | Description 
+--------------------|------------------------------------------------
+**200**             | Success - the request has been processed successfully.
+**201**             | Created - the request was successfully processed and resulted in a new feature created.
+**204**             | No content - the request has been successfully processed and there is no additional content in the response.
+**400**             | Malformed request - the request does not conform to the expected format. Check the JSON (body) being sent.
+**401**             | Not authenticated - Authentication data is incorrect. Check the header of the request for the e-mail and the token.
+**403**             | Unauthorized - you are trying to access a resource that is not allowed.
+**404**             | Not found - you are trying to access a resource that does not exist does not exist on SkyHub.
+**406**             | Format Not Accepted - SkyHub does not support the data format specified in the header (Accept).
+**415**             | Media format not supported - SkyHub can not process the uploaded data by its format. Be sure to use the UTF-8 charset (both in the "Content-Type" header and in the request's own body).
+**422**             | Semantic error - although the format of the request is correct, the data hurt some business rule (for example: invalid transition from request status).
+**429**             | Exceeded request limit - you have made more requests than allowed in a given resource.
+**500 or 502**      | Internal Error - An error occurred on the SkyHub server when attempting to process the request.
+**503**             | Service Unavailable - The SkyHub API is temporarily down.
+**504**             | Timeout - The request took a long time and can not be processed.
+
+## Requisition limit
+
+To ensure good API performance, integrations will be subject to a throttling threshold.
+
+The request limit on Skyhub is per endpoint and per API, so each API has the following limit:
+
+Products = 9 Request per Second
+
+Orders = 9 Request per Second
+
+The other endpoints have a limit of 1 request per second.
+
+If the integration exceeds this limit, HTTP error 429 will be returned.
+
+It is important that when you receive the first HTTP 429 error your integration will wait for a new request window to avoid incurring the same error.
 
 ## Attributes
 
-### [POST] Create an attribute – https://api.skyhub.com.br/attributes
+### [POST] Create an attribute
 
-```curl
+```shell
 
 curl --request POST \ 
---url https://api.skyhub.com.br/attributes \ 
+--url 'https://api.skyhub.com.br/attributes' \ 
 --header 'accept: application/json' \ 
 --header 'content-type: application/json' \ 
 --header 'x-accountmanager-key: pmcell@2017' \ 
@@ -17,9 +104,9 @@ curl --request POST \
 --header 'x-user-email: ti@hariexpress.com.br' \ 
 --data {
   "attribute": {
-    "name": "att_name",
-    "label": "Atributo Exemplo",
-    "options": [
+    "name": "att_name", #Internal attribute identifier
+    "label": "Atributo Exemplo", #Attribute Label. This is the string that will be displayed on the SkyHub portal.
+    "options": [ #Optional field. Lists the options of the attribute, if it is of type "select". Example, ["red", "blue", "white"] for a "Color" attribute.
       "foo",
       "foo",
       "foo"
@@ -29,14 +116,24 @@ curl --request POST \
 
 ```
 
-CREATES A NEW PRODUCT ATTRIBUTE
+<aside class="notice">https://api.skyhub.com.br/attributes</aside>
 
-### [PUT] Update an attribute – https://api.skyhub.com.br/atributes/{name}
+Creater a new product attribute.
 
-```curl
+Header Parameters       | Type      | Required      | Description                               | Example
+------------------------|-----------|---------------|-------------------------------------------|------------------------------
+**accept**              | string    | required      |                                           | application/json
+**content-type**        | string    | required      |                                           | application/json
+**x-accountmanager-key**| string    | required      | Identifier your integration with a SkyHub | your account manager key here
+**x-api-key**           | string    | required      |                                           | your api key here
+**x-user-email**        | string    | required      |                                           | your user email here
+
+### [PUT] Update an attribute
+
+```shell
 
 curl --request PUT \ 
---url https://api.skyhub.com.br/attributes/att_name \ 
+--url 'https://api.skyhub.com.br/attributes/att_name' \ 
 --header 'accept: application/json' \ 
 --header 'content-type: application/json' \ 
 --header 'x-accountmanager-key: pmcell@2017' \ 
@@ -44,9 +141,9 @@ curl --request PUT \
 --header 'x-user-email: ti@hariexpress.com.br' \ 
 --data {
   "attribute": {
-    "name": "att_name",
-    "label": "Atributo Exemplo",
-    "options": [
+    "name": "att_name", #Internal attribute identifier
+    "label": "Atributo Exemplo", #Attribute Label. This is the string that will be displayed on the SkyHub portal.
+    "options": [ #Optional field. Lists the options of the attribute, if it is of type "select". Example, ["red", "blue", "white"] for a "Color" attribute.
       "foo",
       "foo",
       "foo"
@@ -56,16 +153,30 @@ curl --request PUT \
 
 ```
 
-UPDATES AN EXISTING ATTRIBUTE
+<aside class="notice">https://api.skyhub.com.br/atributes/{name}</aside>
+
+Updates an existing attribute.
+
+Path Parameters         | Type      | Required          | Description                           | Example
+------------------------|-----------|-------------------|---------------------------------------|----------------------
+**name**                | string    | required          | Attribute internal name (code)        | attribute_name
+
+Header Parameters       | Type      | Required      | Description                               | Example
+------------------------|-----------|---------------|-------------------------------------------|------------------------------
+**accept**              | string    | required      |                                           | application/json
+**content-type**        | string    | required      |                                           | application/json
+**x-accountmanager-key**| string    | required      | Identifier your integration with a SkyHub | your account manager key here
+**x-api-key**           | string    | required      |                                           | your api key here
+**x-user-email**        | string    | required      |                                           | your user email here
 
 ## Categories
 
-### [GET] List Categories – https://api.skyhub.com.br/categories
+### [GET] List Categories
 
-```curl
+```shell
 
 curl --request GET \ 
---url https://api.skyhub.com.br/categories \ 
+--url 'https://api.skyhub.com.br/categories' \ 
 --header 'accept: application/json' \ 
 --header 'content-type: application/json' \ 
 --header 'x-accountmanager-key: pmcell@2017' \ 
@@ -74,14 +185,92 @@ curl --request GET \
 
 ```
 
-LISTS ALL CATEGORIES REGISTERED ON SKYHUB
+<aside class="notice">https://api.skyhub.com.br/categories</aside>
 
-### [POST] Create a category – https://api.skyhub.com.br/categories
+Lists all categories registered on SkyHub.
 
-```curl
+Header Parameters       | Type      | Required      | Description                               | Example
+------------------------|-----------|---------------|-------------------------------------------|------------------------------
+**accept**              | string    | required      |                                           | application/json
+**content-type**        | string    | required      |                                           | application/json
+**x-accountmanager-key**| string    | required      | Identifier your integration with a SkyHub | your account manager key here
+**x-api-key**           | string    | required      |                                           | your api key here
+**x-user-email**        | string    | required      |                                           | your user email here
+
+### [POST] Create a category
+
+```shell
 
 curl --request POST \ 
---url https://api.skyhub.com.br/categories \ 
+--url 'https://api.skyhub.com.br/categories' \ 
+--header 'accept: application/json' \ 
+--header 'content-type: application/json' \ 
+--header 'x-accountmanager-key: pmcell@2017' \ 
+--header 'x-api-key: 4NoZrnxsSckMWHi15syh' \ 
+--header 'x-user-email: ti@hariexpress.com.br' \
+--data {
+  "category": {
+    "code": "category001", #Internal Category Identification Code
+    "name": "eletrónicos > celulares > fone de ouvido" #Category name. The category name in skyhub should be the joining of all hierarchy category names separated by a ">". Example, "Shoes> Women> Low top trainers"
+  }
+}
+
+```
+
+<aside class="notice">https://api.skyhub.com.br/categories</aside>
+
+Creates a category on SkyHub.
+
+Header Parameters       | Type      | Required      | Description                               | Example
+------------------------|-----------|---------------|-------------------------------------------|------------------------------
+**accept**              | string    | required      |                                           | application/json
+**content-type**        | string    | required      |                                           | application/json
+**x-accountmanager-key**| string    | required      | Identifier your integration with a SkyHub | your account manager key here
+**x-api-key**           | string    | required      |                                           | your api key here
+**x-user-email**        | string    | required      |                                           | your user email here
+
+### [PUT] Update Category
+
+```shell
+
+curl --request PUT \ 
+--url 'https://api.skyhub.com.br/categories/category001' \ 
+--header 'accept: application/json' \ 
+--header 'content-type: application/json' \ 
+--header 'x-accountmanager-key: pmcell@2017' \ 
+--header 'x-api-key: 4NoZrnxsSckMWHi15syh' \ 
+--header 'x-user-email: ti@hariexpress.com.br' \ 
+--data {
+  "category": {
+    "code": "category001",
+    "name": "eletrónicos > celulares > fone de ouvido" #Category name. The category name in skyhub should be the joining of all hierarchy category names separated by a ">". Example, "Shoes> Women> Low top trainers"
+  }
+}
+
+```
+
+<aside class="notice">https://api.skyhub.com.br/categories/{code}</aside>
+
+Updates only one category on SkyHub by the category code.
+
+Path Parameters         | Type      | Required          | Description                           | Example
+------------------------|-----------|-------------------|---------------------------------------|----------------------
+**code**                | string    | required          | Category code to update               | category001
+
+Header Parameters       | Type      | Required      | Description                               | Example
+------------------------|-----------|---------------|-------------------------------------------|------------------------------
+**accept**              | string    | required      |                                           | application/json
+**content-type**        | string    | required      |                                           | application/json
+**x-accountmanager-key**| string    | required      | Identifier your integration with a SkyHub | your account manager key here
+**x-api-key**           | string    | required      |                                           | your api key here
+**x-user-email**        | string    | required      |                                           | your user email here
+
+### [DEL] Delete Category
+
+```shell
+
+curl --request DELETE \ 
+--url 'https://api.skyhub.com.br/categories/category001' \ 
 --header 'accept: application/json' \ 
 --header 'content-type: application/json' \ 
 --header 'x-accountmanager-key: pmcell@2017' \ 
@@ -96,60 +285,30 @@ curl --request POST \
 
 ```
 
-CREATES A CATEGORY ON SKYHUB
+<aside class="notice">https://api.skyhub.com.br/categories/{code}</aside>
 
-### [PUT] Update Category – https://api.skyhub.com.br/categories/{code}
+Deletes only one category on SkyHub by the category code.
 
-```curl
+Path Parameters         | Type      | Required          | Description                           | Example
+------------------------|-----------|-------------------|---------------------------------------|----------------------
+**code**                | string    | required          | Category code to remove               | category001
 
-curl --request PUT \ 
---url https://api.skyhub.com.br/categories/category001 \ 
---header 'accept: application/json' \ 
---header 'content-type: application/json' \ 
---header 'x-accountmanager-key: pmcell@2017' \ 
---header 'x-api-key: 4NoZrnxsSckMWHi15syh ' \ 
---header 'x-user-email: ti@hariexpress.com.br ' \ 
---data {
-  "category": {
-    "code": "category001",
-    "name": "eletrónicos > celulares > fone de ouvido"
-  }
-}
-
-```
-
-UPDATES ONLY ONE CATEGORY ON SKYHUB BY THE CATEGORY CODE
-
-### [DEL] Delete Category – https://api.skyhub.com.br/categories/{code}
-
-```curl
-
-curl --request DELETE \ 
---url https://api.skyhub.com.br/categories/category001 \ 
---header 'accept: application/json' \ 
---header 'content-type: application/json' \ 
---header 'x-accountmanager-key: pmcell@2017' \ 
---header 'x-api-key: 4NoZrnxsSckMWHi15syh ' \ 
---header 'x-user-email: ti@hariexpress.com.br ' \
---data {
-  "category": {
-    "code": "category001",
-    "name": "eletrónicos > celulares > fone de ouvido"
-  }
-}
-
-```
-
-DELETES ONLY ONE CATEGORY ON SKYHUB BY THE CATEGORY CODE
+Header Parameters       | Type      | Required      | Description                               | Example
+------------------------|-----------|---------------|-------------------------------------------|------------------------------
+**accept**              | string    | required      |                                           | application/json
+**content-type**        | string    | required      |                                           | application/json
+**x-accountmanager-key**| string    | required      | Identifier your integration with a SkyHub | your account manager key here
+**x-api-key**           | string    | required      |                                           | your api key here
+**x-user-email**        | string    | required      |                                           | your user email here
 
 ## Freights
 
-### [GET] Return the freights history – https://api.skyhub.com.br/freights
+### [GET] Return the freights history
 
-```curl
+```shell
 
 curl --request GET \ 
---url https://api.skyhub.com.br/freights \ 
+--url 'https://api.skyhub.com.br/freights' \ 
 --header 'accept: application/json' \
 --header 'content-type: application/json' \
 --header 'x-accountmanager-key: pmcell@2017' \ 
@@ -158,113 +317,196 @@ curl --request GET \
 
 ```
 
-LISTS ALL FREIGHTS
+<aside class="notice">https://api.skyhub.com.br/freights</aside>
+
+Lists all freights.
+
+Header Parameters       | Type      | Required      | Description                               | Example
+------------------------|-----------|---------------|-------------------------------------------|------------------------------
+**accept**              | string    | required      |                                           | application/json
+**content-type**        | string    | required      |                                           | application/json
+**x-accountmanager-key**| string    | required      | Identifier your integration with a SkyHub | your account manager key here
+**x-api-key**           | string    | required      |                                           | your api key here
+**x-user-email**        | string    | required      |                                           | your user email here
 
 ## Orders
 
-### [GET] List orders – https://api.skyhub.com.br/orders
+### [GET] List orders
 
-```curl
+```shell
 
 curl --request GET \ 
---url ' https://api.skyhub.com.br/orders?per_page=100&page=2' \ 
+--url 'https://api.skyhub.com.br/orders?per_page=100&page=2' \ 
 --header 'accept: application/json' \ 
 --header 'content-type: application/json' \ 
 --header 'x-accountmanager-key: pmcell@2017' \ 
---header 'x-api-key: 4NoZrnxsSckMWHi15syh ' \ 
---header 'x-user-email: ti@hariexpress.com.br '
+--header 'x-api-key: 4NoZrnxsSckMWHi15syh' \ 
+--header 'x-user-email: ti@hariexpress.com.br'
 
 ```
 
-LISTS ALL ORDERS REGISTERED ON SKYHUB
+<aside class="notice">https://api.skyhub.com.br/orders</aside>
 
-### [GET] Returns a specific order – https://api.skyhub.com.br/orders/{code}
+Lists all orders registered on SkyHub.
 
-```curl
+Query Parameters            | Type       | Required          | Description                                          | Example
+----------------------------|------------|-------------------|------------------------------------------------------|----------------------
+**page**                    | integer    | optional          | Request requisition page                             | 1
+**per_page**                | integer    | optional          | Number of orders per page (maximum = 100)            | 30
+**filters(sale_systems)[]** | string     | optional          | Filter for marketplace of origin of orders           | marketplace
+**filters(statuses)[]**     | string     | optional          | Filter for order status (status identification code) | pending
+
+Header Parameters       | Type      | Required      | Description                               | Example
+------------------------|-----------|---------------|-------------------------------------------|------------------------------
+**accept**              | string    | required      |                                           | application/json
+**content-type**        | string    | required      |                                           | application/json
+**x-accountmanager-key**| string    | required      | Identifier your integration with a SkyHub | your account manager key here
+**x-api-key**           | string    | required      |                                           | your api key here
+**x-user-email**        | string    | required      |                                           | your user email here
+
+### [GET] Returns a specific order
+
+```shell
 
 curl --request GET \ 
---url https://api.skyhub.com.br/orders/Lojas Americanas-266580617301 \ 
+--url 'https://api.skyhub.com.br/orders/Lojas Americanas-266580617301' \ 
 --header 'accept: application/json' \ 
 --header 'content-type: application/json' \ 
 --header 'x-accountmanager-key: pmcell@2017' \ 
---header 'x-api-key: 4NoZrnxsSckMWHi15syh ' \ 
---header 'x-user-email: ti@hariexpress.com.br '
+--header 'x-api-key: 4NoZrnxsSckMWHi15syh' \ 
+--header 'x-user-email: ti@hariexpress.com.br'
 
 ```
 
-RETURNS ONLY ONE ORDER 
+<aside class="notice">https://api.skyhub.com.br/orders/{code}</aside>
 
-### [POST] Invoice – https://api.skyhub.com.br/orders/{code}/invoice
+Returns only one order.
 
-```curl
+Path Parameters         | Type      | Required          | Description                           | Example
+------------------------|-----------|-------------------|---------------------------------------|----------------------
+**code**                | string    | required          | Identification code of the order. The order ID may contain space. It is important to ensure that the final URL will encode the spaces correctly. Example, an order with code "Lojas Americanas-001" should have the url in the format: GET / orders / Lojas% 20Americanas-001        | Marketplace-000000001
+
+Header Parameters       | Type      | Required      | Description                               | Example
+------------------------|-----------|---------------|-------------------------------------------|------------------------------
+**accept**              | string    | required      |                                           | application/json
+**content-type**        | string    | required      |                                           | application/json
+**x-accountmanager-key**| string    | required      | Identifier your integration with a SkyHub | your account manager key here
+**x-api-key**           | string    | required      |                                           | your api key here
+**x-user-email**        | string    | required      |                                           | your user email here
+
+### [POST] Invoice
+
+```shell
 
 curl --request POST \ 
---url https://api.skyhub.com.br/orders/Lojas Americanas-266065081401/invoice\ 
+--url 'https://api.skyhub.com.br/orders/Lojas Americanas-266065081401/invoice' \ 
 --header 'accept: application/json' \ 
 --header 'content-type: application/json' \ 
 --header 'x-accountmanager-key: pmcell@2017' \ 
---header 'x-api-key: 4NoZrnxsSckMWHi15syh ' \ 
---header 'x-user-email: ti@hariexpress.com.br ' \
+--header 'x-api-key: 4NoZrnxsSckMWHi15syh' \ 
+--header 'x-user-email: ti@hariexpress.com.br' \
 --data {
-  "status": "payment_received",
-  "invoice": {
-    "key": "99999999999999999999999999999999999999999999"
+  "status": "payment_received", #Status identification code. If not specified, the order status will not change
+  "invoice": { #NFe Information
+    "key": "99999999999999999999999999999999999999999999" #NFe Key
   }
 }
 
 ```
 
-UPDATES AN ORDER WITH INVOICE INFORMATION
+<aside class="notice">https://api.skyhub.com.br/orders/{code}/invoice</aside>
 
-### [POST] Cancel an order – https://api.skyhub.com.br/orders/{code}/cancel
+Updates an order with invoice information.
 
-```curl
+Path Parameters         | Type      | Required          | Description                           | Example
+------------------------|-----------|-------------------|---------------------------------------|----------------------
+**code**                | string    | required          | Identification code of the order. The order ID may contain space. It is important to ensure that the final URL will encode the spaces correctly. Example, an order with code "Lojas Americanas-001" should have the url in the format: POST / orders / Lojas% 20Americanas-001 / invoice        | Marketplace-000000001
+
+Header Parameters       | Type      | Required      | Description                               | Example
+------------------------|-----------|---------------|-------------------------------------------|------------------------------
+**accept**              | string    | required      |                                           | application/json
+**content-type**        | string    | required      |                                           | application/json
+**x-accountmanager-key**| string    | required      | Identifier your integration with a SkyHub | your account manager key here
+**x-api-key**           | string    | required      |                                           | your api key here
+**x-user-email**        | string    | required      |                                           | your user email here
+
+### [POST] Cancel an order
+
+```shell
 
 curl --request POST \ 
---url https://api.skyhub.com.br/orders/Lojas Americanas-266065081401/cancel \ 
+--url 'https://api.skyhub.com.br/orders/Lojas Americanas-266065081401/cancel' \ 
 --header 'accept: application/json' \ 
 --header 'content-type: application/json' \ 
 --header 'x-accountmanager-key: pmcell@2017' \ 
---header 'x-api-key: 4NoZrnxsSckMWHi15syh ' \ 
---header 'x-user-email: ti@hariexpress.com.br ' \
+--header 'x-api-key: 4NoZrnxsSckMWHi15syh' \ 
+--header 'x-user-email: ti@hariexpress.com.br' \
 --data {
   "status": "order_canceled"
 }
 
 ```
 
-UPDATES AN ORDER WITH THE CANCELATION DATA
+<aside class="notice">https://api.skyhub.com.br/orders/{code}/cancel</aside>
 
-### [POST] Confirm Delivery – https://api.skyhub.com.br/orders/{code}/delivery
+Updates an order with the cancelation data.
 
-```curl
+Path Parameters         | Type      | Required          | Description                           | Example
+------------------------|-----------|-------------------|---------------------------------------|----------------------
+**code**                | string    | required          | Identification code of the order. The order ID may contain space. It is important to ensure that the final URL will encode the spaces correctly. Example, an order with code "Lojas Americanas-001" should have the url in the format: POST / orders / Lojas% 20Americanas-001 / cancel        | Marketplace-000000001
+
+Header Parameters       | Type      | Required      | Description                               | Example
+------------------------|-----------|---------------|-------------------------------------------|------------------------------
+**accept**              | string    | required      |                                           | application/json
+**content-type**        | string    | required      |                                           | application/json
+**x-accountmanager-key**| string    | required      | Identifier your integration with a SkyHub | your account manager key here
+**x-api-key**           | string    | required      |                                           | your api key here
+**x-user-email**        | string    | required      |                                           | your user email here
+
+### [POST] Confirm Delivery
+
+```shell
 
 curl --request POST \ 
---url https://api.skyhub.com.br/orders/Lojas Americanas-266065081401/delivery \ 
+--url 'https://api.skyhub.com.br/orders/Lojas Americanas-266065081401/delivery' \ 
 --header 'accept: application/json' \ 
 --header 'content-type: application/json' \ 
 --header 'x-accountmanager-key: pmcell@2017' \ 
---header 'x-api-key: 4NoZrnxsSckMWHi15syh ' \ 
---header 'x-user-email: ti@hariexpress.com.br ' \
+--header 'x-api-key: 4NoZrnxsSckMWHi15syh' \ 
+--header 'x-user-email: ti@hariexpress.com.br' \
 --data {
   "status": "complete"
 }
 
 ```
 
-UPDATES AN ORDER AS DELIVERED ON SKYHUB
+<aside class="notice">https://api.skyhub.com.br/orders/{code}/delivery</aside>
 
-### [POST] Send delivery data – https://api.skyhub.com.br/orders/{code}/shipments
+Updates an order as delivered on SkyHub.
 
-```curl
+Path Parameters         | Type      | Required          | Description                           | Example
+------------------------|-----------|-------------------|---------------------------------------|----------------------
+**code**                | string    | required          | Identification code of the order. The order ID may contain space. It is important to ensure that the final URL will encode the spaces correctly. Example, an order with code "Lojas Americanas-001" should have the url in the format: POST / orders / Lojas% 20Americanas-001 / delivery        | Marketplace-000000001
+
+Header Parameters       | Type      | Required      | Description                               | Example
+------------------------|-----------|---------------|-------------------------------------------|------------------------------
+**accept**              | string    | required      |                                           | application/json
+**content-type**        | string    | required      |                                           | application/json
+**x-accountmanager-key**| string    | required      | Identifier your integration with a SkyHub | your account manager key here
+**x-api-key**           | string    | required      |                                           | your api key here
+**x-user-email**        | string    | required      |                                           | your user email here
+
+### [POST] Send delivery data
+
+```shell
 
 curl --request POST \ 
---url https://api.skyhub.com.br/orders/Lojas Americanas-266065081401/shipments \ 
+--url 'https://api.skyhub.com.br/orders/Lojas Americanas-266065081401/shipments' \ 
 --header 'accept: application/json' \ 
 --header 'content-type: application/json' \ 
 --header 'x-accountmanager-key: pmcell@2017' \ 
---header 'x-api-key: 4NoZrnxsSckMWHi15syh ' \ 
---header 'x-user-email: ti@hariexpress.com.br ' \
+--header 'x-api-key: 4NoZrnxsSckMWHi15syh' \ 
+--header 'x-user-email: ti@hariexpress.com.br' \
 --data {
   "status": "order_shipped",
   "shipment": {
@@ -286,35 +528,63 @@ curl --request POST \
 
 ```
 
-UPDATES AN ORDER WITH THE TRACKING CODE DATA AND THE METHOD OF SHIPPING OF THE TRANSPORTER. (B2W accepts at maximum 200 characters in the URL of tracking).
+<aside class="notice">https://api.skyhub.com.br/orders/{code}/shipments</aside>
 
-### [GET] Gets shipping label – https://api.skyhub.com.br/orders/{code}/shipments_labels
+Updates an order with the tracking code data and the method of shipping of the transporter (B2W accepts at maximum 200 characters in the URL of tracking).
 
-```curl
+Path Parameters         | Type      | Required          | Description                           | Example
+------------------------|-----------|-------------------|---------------------------------------|----------------------
+**code**                | string    | required          | Identification code of the order. The order ID may contain space. It is important to ensure that the final URL will encode the spaces correctly. Example, an order with code "Lojas Americanas-001" should have the url in the format: POST / orders / Lojas% 20Americanas-001 / shipments        | Marketplace-000000001
+
+Header Parameters       | Type      | Required      | Description                               | Example
+------------------------|-----------|---------------|-------------------------------------------|------------------------------
+**accept**              | string    | required      |                                           | application/json
+**content-type**        | string    | required      |                                           | application/json
+**x-accountmanager-key**| string    | required      | Identifier your integration with a SkyHub | your account manager key here
+**x-api-key**           | string    | required      |                                           | your api key here
+**x-user-email**        | string    | required      |                                           | your user email here
+
+### [GET] Gets shipping label
+
+```shell
 
 curl --request GET \ 
---url https://api.skyhub.com.br/orders/Lojas Americanas-266065081401/shipment_labels \ 
+--url 'https://api.skyhub.com.br/orders/Lojas Americanas-266065081401/shipment_labels' \ 
 --header 'accept: application/pdf' \ 
 --header 'content-type: application/json' \ 
 --header 'x-accountmanager-key: pmcell@2017' \ 
---header 'x-api-key: 4NoZrnxsSckMWHi15syh ' \ 
---header 'x-user-email: ti@hariexpress.com.br ' \
+--header 'x-api-key: 4NoZrnxsSckMWHi15syh' \ 
+--header 'x-user-email: ti@hariexpress.com.br'
 
 ```
 
-OBTAINS THE LABEL OF AN ORDER THAT HAD THE FREIGHT CALCULATED VIA B2W DELIVERIES
+<aside class="notice">https://api.skyhub.com.br/orders/{code}/shipments_labels</aside>
 
-### [POST] Transport exception – https://api.skyhub.com.br/orders/{code}/shipments_exception
+Obtains the label of an order that had the freight calculated via B2W deliveries.
 
-```curl
+Path Parameters         | Type      | Required          | Description                           | Example
+------------------------|-----------|-------------------|---------------------------------------|----------------------
+**code**                | string    | required          | Identification code of the order. The order ID may contain space. It is important to ensure that the final URL will encode the spaces correctly. Example, an order with code "Lojas Americanas-001" should have the url in the format: GET / orders / Lojas% 20Americanas-001        | Marketplace-000000001
+
+Header Parameters       | Type      | Required      | Description                               | Example
+------------------------|-----------|---------------|-------------------------------------------|------------------------------
+**accept**              | string    | required      |                                           | application/pdf
+**content-type**        | string    | required      |                                           | application/json
+**x-accountmanager-key**| string    | required      | Identifier your integration with a SkyHub | your account manager key here
+**x-api-key**           | string    | required      |                                           | your api key here
+**x-user-email**        | string    | required      |                                           | your user email here
+
+### [POST] Transport exception
+
+```shell
 
 curl --request POST \ 
---url https://api.skyhub.com.br/orders/Lojas Americanas-266065081401/shipment_exception \ 
+--url 'https://api.skyhub.com.br/orders/Lojas Americanas-266065081401/shipment_exception' \ 
 --header 'accept: application/pdf' \ 
 --header 'content-type: application/json' \ 
 --header 'x-accountmanager-key: pmcell@2017' \ 
---header 'x-api-key: 4NoZrnxsSckMWHi15syh ' \ 
---header 'x-user-email: ti@hariexpress.com.br ' \
+--header 'x-api-key: 4NoZrnxsSckMWHi15syh' \ 
+--header 'x-user-email: ti@hariexpress.com.br' \
 --data {
   "shipment_exception": {
     "occurrence_date": "2012-10-06T04:13:00-03:00",
@@ -324,37 +594,57 @@ curl --request POST \
 
 ```
 
-TRANSPORT EXCEPTION
+<aside class="notice">https://api.skyhub.com.br/orders/{code}/shipments_exception</aside>
+
+Transport exception.
+
+Header Parameters       | Type      | Required      | Description                               | Example
+------------------------|-----------|---------------|-------------------------------------------|------------------------------
+**accept**              | string    | required      |                                           | application/pdf
+**content-type**        | string    | required      |                                           | application/json
+**x-accountmanager-key**| string    | required      | Identifier your integration with a SkyHub | your account manager key here
+**x-api-key**           | string    | required      |                                           | your api key here
+**x-user-email**        | string    | required      |                                           | your user email here
 
 ## PLP
 
-### [GET] List PLP’s – https://api.skyhub.com.br/shipments/b2w
+### [GET] List PLP’s
 
-```curl
+```shell
 
 curl --request GET \ 
---url ' https://api.skyhub.com.br/shipments/b2w/' \ 
+--url 'https://api.skyhub.com.br/shipments/b2w/' \ 
 --header 'accept: application/json' \ 
 --header 'content-type: application/json' \ 
 --header 'x-accountmanager-key: pmcell@2017' \ 
---header 'x-api-key: 4NoZrnxsSckMWHi15syh ' \ 
---header 'x-user-email: ti@hariexpress.com.br '
+--header 'x-api-key: 4NoZrnxsSckMWHi15syh' \ 
+--header 'x-user-email: ti@hariexpress.com.br'
 
 ```
 
-FUNCTION THAT ALLOWS TO CHECK IN THE API ALL GROUPED PLPs. IN THE RETURN IT WILL BE POSSIBLE TO VERIFY THE ID OF THE PLP AND THE INSERTED ORDERS IN EACH GROUP.
+<aside class="notice">https://api.skyhub.com.br/shipments/b2w</aside>
 
-### [POST] Grouping Orders in a PLP – https://api.skyhub.com.br/shipments/b2w
+Function that allows to check in the API all grouped PLPs. In the return it will be possible to verify the id of the PLP and the inserted orders in each group.
 
-```curl
+Header Parameters       | Type      | Required      | Description                               | Example
+------------------------|-----------|---------------|-------------------------------------------|------------------------------
+**accept**              | string    | required      |                                           | application/json
+**content-type**        | string    | required      |                                           | application/json
+**x-accountmanager-key**| string    | required      | Identifier your integration with a SkyHub | your account manager key here
+**x-api-key**           | string    | required      |                                           | your api key here
+**x-user-email**        | string    | required      |                                           | your user email here
+
+### [POST] Grouping Orders in a PLP
+
+```shell
 
 curl --request POST \ 
---url https://api.skyhub.com.br/shipments/b2w/ \ 
+--url 'https://api.skyhub.com.br/shipments/b2w/' \ 
 --header 'accept: application/json' \ 
 --header 'content-type: application/json' \ 
 --header 'x-accountmanager-key: pmcell@2017' \ 
---header 'x-api-key: 4NoZrnxsSckMWHi15syh ' \ 
---header 'x-user-email: ti@hariexpress.com.br ' \
+--header 'x-api-key: 4NoZrnxsSckMWHi15syh' \ 
+--header 'x-user-email: ti@hariexpress.com.br' \
 --data {
   "order_remote_codes": [
     "265358194401",
@@ -365,114 +655,182 @@ curl --request POST \
 
 ```
 
-RETURN ORDERS TO GROUP, JUST 20 ORDERS FOR PAGE
+<aside class="notice">https://api.skyhub.com.br/shipments/b2w</aside>
 
-### [DEL] Ungroup PLP – https://api.skyhub.com.br/shipments/b2w
+Return orders to group, just 20 orders for page.
 
-```curl
+Header Parameters       | Type      | Required      | Description                               | Example
+------------------------|-----------|---------------|-------------------------------------------|------------------------------
+**accept**              | string    | required      |                                           | application/json
+**content-type**        | string    | required      |                                           | application/json
+**x-accountmanager-key**| string    | required      | Identifier your integration with a SkyHub | your account manager key here
+**x-api-key**           | string    | required      |                                           | your api key here
+**x-user-email**        | string    | required      |                                           | your user email here
+
+### [DEL] Ungroup PLP
+
+```shell
 
 curl --request DELETE \ 
---url https://api.skyhub.com.br/shipments/b2w/ \ 
+--url 'https://api.skyhub.com.br/shipments/b2w/' \ 
 --header 'accept: application/json' \ 
 --header 'content-type: application/json' \ 
 --header 'x-accountmanager-key: pmcell@2017' \ 
---header 'x-api-key: 4NoZrnxsSckMWHi15syh ' \ 
---header 'x-user-email: ti@hariexpress.com.br ' \
+--header 'x-api-key: 4NoZrnxsSckMWHi15syh' \ 
+--header 'x-user-email: ti@hariexpress.com.br' \
 --data {
   "plp_id": "14"
 }
 
 ```
 
-BASICALLY THE OPPOSITE OF THAT LAST OPERATION
+<aside class="notice">https://api.skyhub.com.br/shipments/b2w</aside>
 
-### [GET] Recover PLP PDF – https://api.skyhub.com.br/shipments/b2w/view?plp_id={CODE}
+Basically the opposite of that last operation.
 
-```curl
+Header Parameters       | Type      | Required      | Description                               | Example
+------------------------|-----------|---------------|-------------------------------------------|------------------------------
+**accept**              | string    | required      |                                           | application/json
+**content-type**        | string    | required      |                                           | application/json
+**x-accountmanager-key**| string    | required      | Identifier your integration with a SkyHub | your account manager key here
+**x-api-key**           | string    | required      |                                           | your api key here
+**x-user-email**        | string    | required      |                                           | your user email here
+
+### [GET] Recover PLP PDF
+
+```shell
 
 curl --request GET \ 
 --url 'https://api.skyhub.com.br/shipments/b2w/view?plp_id=14' \ 
 --header 'accept: application/pdf' \ 
 --header 'content-type: application/json' \ 
 --header 'x-accountmanager-key: pmcell@2017' \ 
---header 'x-api-key: 4NoZrnxsSckMWHi15syh ' \ 
---header 'x-user-email: ti@hariexpress.com.br ' \
+--header 'x-api-key: 4NoZrnxsSckMWHi15syh' \ 
+--header 'x-user-email: ti@hariexpress.com.br'
 
 ```
 
-FIRST YOU NEED TO GROUP THE PLPs, YOU WILL RECEIVE A ID AND USE IT IN THIS FUCTION. IF YOU WANT TO RECEIVE THE DATAS IN JSON FORMAT JUST USE THE HEADER Accept: application/json. 
+<aside class="notice">https://api.skyhub.com.br/shipments/b2w/view?plp_id={CODE}</aside>
 
-### [GET] Order list apt for grouping – https://api.skyhub.com.br/shipments/b2w/to_group
+First you need to group the PLPs, you will receive a id and use it in this function. If you want to receive the datas in json format just use the Header Accept: application/pdf.
 
-```curl
+Header Parameters       | Type      | Required      | Description                               | Example
+------------------------|-----------|---------------|-------------------------------------------|------------------------------
+**accept**              | string    | required      |                                           | application/pdf
+**content-type**        | string    | required      |                                           | application/json
+**x-accountmanager-key**| string    | required      | Identifier your integration with a SkyHub | your account manager key here
+**x-api-key**           | string    | required      |                                           | your api key here
+**x-user-email**        | string    | required      |                                           | your user email here
+
+### [GET] Order list apt for grouping
+
+```shell
 
 curl --request GET \ 
---url https://api.skyhub.com.br/shipments/b2w/to_group \ 
+--url 'https://api.skyhub.com.br/shipments/b2w/to_group' \ 
 --header 'accept: application/pdf' \ 
 --header 'content-type: application/json' \ 
 --header 'x-accountmanager-key: pmcell@2017' \ 
---header 'x-api-key: 4NoZrnxsSckMWHi15syh ' \ 
---header 'x-user-email: ti@hariexpress.com.br ' \
+--header 'x-api-key: 4NoZrnxsSckMWHi15syh' \ 
+--header 'x-user-email: ti@hariexpress.com.br'
 
 ```
 
-RETURN THE PLP ID, WITH THE ID WILL BE NECESSARY RECOVER THE PLP
+<aside class="notice">https://api.skyhub.com.br/shipments/b2w/to_group</aside>
+
+Return the PLP ID, with the ID will be necessary recover the PLP.
+
+Header Parameters       | Type      | Required      | Description                               | Example
+------------------------|-----------|---------------|-------------------------------------------|------------------------------
+**accept**              | string    | required      |                                           | application/pdf
+**content-type**        | string    | required      |                                           | application/json
+**x-accountmanager-key**| string    | required      | Identifier your integration with a SkyHub | your account manager key here
+**x-api-key**           | string    | required      |                                           | your api key here
+**x-user-email**        | string    | required      |                                           | your user email here
 
 ## Products 
 
-### [GET] Returns the products registered in the skyhub – https://api.skyhub.com.br/products
+### [GET] Returns the products registered in the skyhub
 
-```curl
+```shell
 
 curl --request GET \ 
 --url 'https://api.skyhub.com.br/products?page=1&per_page=100' \ 
 --header 'accept: application/json' \ 
 --header 'content-type: application/json' \ 
 --header 'x-accountmanager-key: pmcell@2017' \ 
---header 'x-api-key: 4NoZrnxsSckMWHi15syh ' \ 
---header 'x-user-email: ti@hariexpress.com.br ' \
+--header 'x-api-key: 4NoZrnxsSckMWHi15syh' \ 
+--header 'x-user-email: ti@hariexpress.com.br'
 
 ```
 
-LIST ALL PRODUCTS REGISTERED ON SKYHUB
+<aside class="notice">https://api.skyhub.com.br/products</aside>
 
-### [GET] Returns a specific product in the skyhub – https://api.skyhub.com.br/products/{sku}
+List all products registered on SkyHub.
 
-```curl
+Query Parameters            | Type       | Required          | Description                | Example
+----------------------------|------------|-------------------|----------------------------|----------------------
+**status**                  | string    | optional           |                            | foo
+
+Header Parameters       | Type      | Required      | Description                               | Example
+------------------------|-----------|---------------|-------------------------------------------|------------------------------
+**accept**              | string    | required      |                                           | application/json
+**content-type**        | string    | required      |                                           | application/json
+**x-accountmanager-key**| string    | required      | Identifier your integration with a SkyHub | your account manager key here
+**x-api-key**           | string    | required      |                                           | your api key here
+**x-user-email**        | string    | required      |                                           | your user email here
+
+### [GET] Returns a specific product in the skyhub
+
+```shell
 
 curl --request GET \ 
---url ' https://api.skyhub.com.br/products/0927@wangxx' \ 
+--url 'https://api.skyhub.com.br/products/0927@wangxx' \ 
 --header 'accept: application/json' \ 
 --header 'content-type: application/json' \ 
 --header 'x-accountmanager-key: pmcell@2017' \ 
---header 'x-api-key: 4NoZrnxsSckMWHi15syh ' \ 
---header 'x-user-email: ti@hariexpress.com.br ' \
+--header 'x-api-key: 4NoZrnxsSckMWHi15syh' \ 
+--header 'x-user-email: ti@hariexpress.com.br'
 
 ```
 
-GET ONLY ONE PRODUCT ACCORDING WITH THE SKU ID
+<aside class="notice">https://api.skyhub.com.br/products/{sku}</aside>
 
-### [POST] Create a product in the SkyHub – https://api.skyhub.com.br/products
+Get only one product according with the SKU ID.
 
-```curl
+Path Parameters            | Type       | Required          | Description                | Example
+---------------------------|------------|-------------------|----------------------------|----------------------
+**sku**                    | string     | required          |                            | 	sku123
+
+Header Parameters       | Type      | Required      | Description                               | Example
+------------------------|-----------|---------------|-------------------------------------------|------------------------------
+**accept**              | string    | required      |                                           | application/json
+**content-type**        | string    | required      |                                           | application/json
+**x-accountmanager-key**| string    | required      | Identifier your integration with a SkyHub | your account manager key here
+**x-api-key**           | string    | required      |                                           | your api key here
+**x-user-email**        | string    | required      |                                           | your user email here
+
+### [POST] Create a product in the SkyHub
+
+```shell
 
 curl --request POST \ 
---url https://api.skyhub.com.br/products \ 
+--url 'https://api.skyhub.com.br/products' \ 
 --header 'accept: application/json' \ 
 --header 'content-type: application/json' \ 
 --header 'x-accountmanager-key: pmcell@2017' \ 
---header 'x-api-key: 4NoZrnxsSckMWHi15syh ' \ 
---header 'x-user-email: ti@hariexpress.com.br ' \ 
+--header 'x-api-key: 4NoZrnxsSckMWHi15syh' \ 
+--header 'x-user-email: ti@hariexpress.com.br' \ 
 --data {
   "product": {
             "sku": "15077",
             "name": "Fonte De Alimentação Digital Tipo Yihua - Yaxun Ps-1502dd - 130V",
-            "description": "Ideal para a manutenção em equipamentos eletrônicos!<br/>Proporciona tranquilidade e precisão a seu usuário.<br/>Possui display duplo para controle de tensão e corrente Knob para ajuste da corrente de proteção.<br/>Um Knob com tensões pré-determinadas com cinco invariáveis e uma variável<br/>Proteção contra sobrecarga.<br/>Proteção contra inversão de polaridade.<br/>Refrigerado por dissipador.<br/>Sistema de segurança com corte de alimentação automático.<br/>Quando a corrente atinge seu pico, a fonte corta sua alimentação.<br/>A Fonte de Alimentação PS-1502DD é uma peça indispensável na bancada de quem deseja trabalhar corretamente sem necessidade de improvisos ou invenções na hora de reparar seus equipamentos.<br/>Além de ser um produto de alta precisão que fornece alimentação contínua, é também, muito leve e robusta, sendo muito prática e durável para os reparos do dia a dia.<br/>Conta ainda com sistema de segurança, um tipo de sistema que possibilita a fonte controlar a corrente máxima que deve fornecer, possibilitando ajustes entre 0.6 e 2A.<br/>uando o limite estipulado for alcançando a fonte corta automaticamente a alimentação para evitar a ocorrência de danos aos equipamentos que estão sendo testados.<br/>A fonte vem equipada com dois displays digitais de LED, o da esquerda indicada a corrente de proteção e a corrente de consumo, enquanto o da direita demonstra tensão ajustada.<br/>Para sua regulagem, ela conta com 4 Knobs de ajuste (potenciômetros) que lhe auxiliam no perfeito ajuste de tensão e corrente que circula até o seu equipamento.<br/>",
+            "description": "Ideal para a manutenção em equipamentos eletrônicos!<br/>Proporciona tranquilidade e precisão a seu usuário.<br/>Possui display duplo para controle de tensão e corrente Knob para ajuste da corrente de proteção.<br/>Um Knob com tensões pré-determinadas com cinco invariáveis e uma variável<br/>Proteção contra sobrecarga.<br/>Proteção contra inversão de polaridade.<br/>Refrigerado por dissipador.<br/>Sistema de segurança com corte de alimentação automático.<br/>Quando a corrente atinge seu pico, a fonte corta sua alimentação.<br/>A Fonte de Alimentação PS-1502DD é uma peça indispensável na bancada de quem deseja trabalhar corretamente sem necessidade de improvisos ou invenções na hora de reparar seus equipamentos.<br/>Além de ser um produto de alta precisão que fornece alimentação contínua, é também, muito leve e robusta, sendo muito prática e durável para os reparos do dia a dia.<br/>Conta ainda com sistema de segurança, um tipo de sistema que possibilita a fonte controlar a corrente máxima que deve fornecer, possibilitando ajustes entre 0.6 e 2A.<br/>uando o limite estipulado for alcançando a fonte corta automaticamente a alimentação para evitar a ocorrência de danos aos equipamentos que estão sendo testados.<br/>A fonte vem equipada com dois displays digitais de LED, o da esquerda indicada a corrente de proteção e a corrente de consumo, enquanto o da direita demonstra tensão ajustada.<br/>Para sua regulagem, ela conta com 4 Knobs de ajuste (potenciômetros) que lhe auxiliam no perfeito ajuste de tensão e corrente que circula até o seu equipamento.<br/>", #Product Sku
             "status": "enabled",
             "removed": false,
             "price": 255555,
             "promotional_price": 1690.90,
-            "cost": null,
+            "cost": null, #Product Cost
             "weight": 1.6,
             "height": 25,
             "width": 13,
@@ -480,7 +838,7 @@ curl --request POST \
             "brand": "Yaxun",
             "ean": null,
             "nbm": "84733011",
-            "categories": [
+            "categories": [ #Categories
                 {
                     "code": "MLB30167",
                     "name": "Agro, Indústria e Comércio > Agro, Indústria e Comércio > Indústria Agrícola > Matéria Prima > Mudas"
@@ -491,13 +849,13 @@ curl --request POST \
                 "https://www.bluecell.com.br/image/cache/catalog/foun160-600x600.jpg",
                 "https://static3.tcdn.com.br/img/img_prod/375576/carregador_fonte_parede_maxx_733_3_usb_pmcell_qualcomm_3_0_9622_2_20170908094039.jpg"
             ],
-            "specifications": [
+            "specifications": [ #Specifications
                 {
                     "key": "VOLTAGEM",
                     "value": "220v"
                 }
             ],
-            "variations": [
+            "variations": [ #Variations
                 {
                     "sku": "F0011-220",
                     "qty": 500,
@@ -507,7 +865,7 @@ curl --request POST \
                 "https://www.bluecell.com.br/image/cache/catalog/foun160-600x600.jpg",
                 "https://static3.tcdn.com.br/img/img_prod/375576/carregador_fonte_parede_maxx_733_3_usb_pmcell_qualcomm_3_0_9622_2_20170908094039.jpg"
                     ],
-                    "specifications": [
+                    "specifications": [ #Specifications
                         {
                             "key": "VOLTAGEM",
                             "value": "220v"
@@ -523,19 +881,29 @@ curl --request POST \
 
 ```
 
-CREATES A PRODUCT, THE DETAILS GOES ON THE BODY (B2W accepts up to 25 characters in sku)
+<aside class="notice">https://api.skyhub.com.br/products</aside>
 
-### [PUT] Update a product in the skyhub – https://api.skyhub.com.br/products/{sku}
+Creates a product, the details goes on the body (B2W accepts up to 25 characters in sku).
 
-```curl
+Header Parameters       | Type      | Required      | Description                               | Example
+------------------------|-----------|---------------|-------------------------------------------|------------------------------
+**accept**              | string    | required      |                                           | application/json
+**content-type**        | string    | required      |                                           | application/json
+**x-accountmanager-key**| string    | required      | Identifier your integration with a SkyHub | your account manager key here
+**x-api-key**           | string    | required      |                                           | your api key here
+**x-user-email**        | string    | required      |                                           | your user email here
+
+### [PUT] Update a product in the skyhub
+
+```shell
 
 curl --request PUT \ 
---url https://api.skyhub.com.br/products/B2W15233202767811 \ 
+--url 'https://api.skyhub.com.br/products/B2W15233202767811' \ 
 --header 'accept: application/json' \ 
 --header 'content-type: application/json' \ 
 --header 'x-accountmanager-key: pmcell@2017' \ 
---header 'x-api-key: 4NoZrnxsSckMWHi15syh ' \ 
---header 'x-user-email: ti@hariexpress.com.br ' \ 
+--header 'x-api-key: 4NoZrnxsSckMWHi15syh' \ 
+--header 'x-user-email: ti@hariexpress.com.br' \ 
 --data {
     "product": {
         
@@ -627,35 +995,63 @@ curl --request PUT \
 
 ```
 
-UPDATES A PRODUCT USING THE SKU ID
+<aside class="notice">https://api.skyhub.com.br/products/{sku}</aside>
 
-### [DEL] Delete a product in the Skyhub – https://api.skyhub.com.br/products/{sku}
+Updates a product using the SKU ID.
 
-```curl
+Path Parameters            | Type       | Required          | Description                | Example
+---------------------------|------------|-------------------|----------------------------|----------------------
+**sku**                    | string     | required          |                            | 	sku123
+
+Header Parameters       | Type      | Required      | Description                               | Example
+------------------------|-----------|---------------|-------------------------------------------|------------------------------
+**accept**              | string    | required      |                                           | application/json
+**content-type**        | string    | required      |                                           | application/json
+**x-accountmanager-key**| string    | required      | Identifier your integration with a SkyHub | your account manager key here
+**x-api-key**           | string    | required      |                                           | your api key here
+**x-user-email**        | string    | required      |                                           | your user email here
+
+### [DEL] Delete a product in the Skyhub
+
+```shell
 
 curl --request DELETE \ 
---url https://api.skyhub.com.br/products/15077 \ 
+--url 'https://api.skyhub.com.br/products/15077' \ 
 --header 'accept: application/json' \ 
 --header 'content-type: application/x-www-form-urlencoded' \ 
 --header 'x-accountmanager-key: pmcell@2017' \ 
 --header 'x-api-key: 4NoZrnxsSckMWHi15syh' \ 
---header 'x-user-email: ti@hariexpress.com.br'  \
+--header 'x-user-email: ti@hariexpress.com.br'
 
 ```
 
-DELETES A PRODUCT ON SKYHUB USING THE SKU ID
+<aside class="notice">https://api.skyhub.com.br/products/{sku}</aside>
 
-### [POST] Create product variation in the Skyhub – https://api.skyhub.com.br/products/{sku}/variations
+Deletes a product on SkyHub using the SKU ID.
 
-```curl
+Path Parameters            | Type       | Required          | Description                | Example
+---------------------------|------------|-------------------|----------------------------|----------------------
+**sku**                    | string     | required          |                            | 	sku123
+
+Header Parameters       | Type      | Required      | Description                               | Example
+------------------------|-----------|---------------|-------------------------------------------|------------------------------
+**accept**              | string    | required      |                                           | application/json
+**content-type**        | string    | required      |                                           | application/json
+**x-accountmanager-key**| string    | required      | Identifier your integration with a SkyHub | your account manager key here
+**x-api-key**           | string    | required      |                                           | your api key here
+**x-user-email**        | string    | required      |                                           | your user email here
+
+### [POST] Create product variation in the Skyhub
+
+```shell
 
 curl --request POST \ 
---url https://api.skyhub.com.br/products/15077/variations \ 
+--url 'https://api.skyhub.com.br/products/15077/variations' \ 
 --header 'accept: application/json' \ 
 --header 'content-type: application/x-www-form-urlencoded' \ 
 --header 'x-accountmanager-key: pmcell@2017' \ 
 --header 'x-api-key: 4NoZrnxsSckMWHi15syh' \ 
---header 'x-user-email: ti@hariexpress.com.br'  \
+--header 'x-user-email: ti@hariexpress.com.br' \
 --data {
   "variation": {
     "sku": "9932",
@@ -677,35 +1073,59 @@ curl --request POST \
 
 ```
 
-CREATES PRODUCTS VARIATION USING THE SKU ID
+<aside class="notice">https://api.skyhub.com.br/products/{sku}/variations</aside>
 
-### [GET] Marketplaces URL – https://api.skyhub.com.br/products/urls
+Creates products variation using the SKU ID.
 
-```curl
+Path Parameters            | Type       | Required          | Description                | Example
+---------------------------|------------|-------------------|----------------------------|----------------------
+**sku**                    | string     | required          | product code               | 	sku123
+
+Header Parameters       | Type      | Required      | Description                               | Example
+------------------------|-----------|---------------|-------------------------------------------|------------------------------
+**accept**              | string    | required      |                                           | application/json
+**content-type**        | string    | required      |                                           | application/json
+**x-accountmanager-key**| string    | required      | Identifier your integration with a SkyHub | your account manager key here
+**x-api-key**           | string    | required      |                                           | your api key here
+**x-user-email**        | string    | required      |                                           | your user email here
+
+### [GET] Marketplaces URL
+
+```shell
 
 curl --request GET \ 
---url https://api.skyhub.com.br/products/urls \ 
+--url 'https://api.skyhub.com.br/products/urls' \ 
 --header 'accept: application/json' \ 
 --header 'content-type: application/json ' \ 
 --header 'x-accountmanager-key: pmcell@2017' \ 
 --header 'x-api-key: 4NoZrnxsSckMWHi15syh' \ 
---header 'x-user-email: ti@hariexpress.com.br'  \
+--header 'x-user-email: ti@hariexpress.com.br'
 
 ```
 
-RETURNS THE URL OF THE PRODUCTS IN THE MARKETPLACES (B2W AND CNOVA)
+<aside class="notice">https://api.skyhub.com.br/products/urls</aside>
 
-### [POST] CREATE A PRODUCT WITH PRICE VARIATION IN THE SKU – https://api.skyhub.com.br/products
+Returns the url of the products in the marketplaces (B2W AND Cnova).
 
-```curl
+Header Parameters       | Type      | Required      | Description                               | Example
+------------------------|-----------|---------------|-------------------------------------------|------------------------------
+**accept**              | string    | required      |                                           | application/json
+**content-type**        | string    | required      |                                           | application/json
+**x-accountmanager-key**| string    | required      | Identifier your integration with a SkyHub | your account manager key here
+**x-api-key**           | string    | required      |                                           | your api key here
+**x-user-email**        | string    | required      |                                           | your user email here
+
+### [POST] CREATE A PRODUCT WITH PRICE VARIATION IN THE SKU
+
+```shell
 
 curl --request POST \ 
---url https://api.skyhub.com.br/products \ 
+--url 'https://api.skyhub.com.br/products' \ 
 --header 'accept: application/json' \ 
 --header 'content-type: application/json' \ 
 --header 'x-accountmanager-key: pmcell@2017' \ 
---header 'x-api-key: 4NoZrnxsSckMWHi15syh ' \ 
---header 'x-user-email: ti@hariexpress.com.br ' \ 
+--header 'x-api-key: 4NoZrnxsSckMWHi15syh' \ 
+--header 'x-user-email: ti@hariexpress.com.br' \ 
 --data {
   "product": {
     "sku": "Skyhub",
@@ -766,37 +1186,57 @@ curl --request POST \
 
 ```
 
-CREATES A PRODUCT WITH PRICE VARIATION IN THE SKU
+<aside class="notice">https://api.skyhub.com.br/products</aside>
 
-## QUEUES 
+Creates a product with price variation in the SKU.
 
-### [GET] Receive a queue of orders – https://api.skyhub.com.br/queues/orders
+Header Parameters       | Type      | Required      | Description                               | Example
+------------------------|-----------|---------------|-------------------------------------------|------------------------------
+**accept**              | string    | required      |                                           | application/json
+**content-type**        | string    | required      |                                           | application/json
+**x-accountmanager-key**| string    | required      | Identifier your integration with a SkyHub | your account manager key here
+**x-api-key**           | string    | required      |                                           | your api key here
+**x-user-email**        | string    | required      |                                           | your user email here
 
-```curl
+## Queues 
+
+### [GET] Receive a queue of orders
+
+```shell
 
 curl --request GET \ 
---url https://api.skyhub.com.br/queues/orders \ 
+--url 'https://api.skyhub.com.br/queues/orders' \ 
 --header 'accept: application/json' \ 
 --header 'content-type: application/json ' \ 
 --header 'x-accountmanager-key: pmcell@2017' \ 
 --header 'x-api-key: 4NoZrnxsSckMWHi15syh' \ 
---header 'x-user-email: ti@hariexpress.com.br'  \
+--header 'x-user-email: ti@hariexpress.com.br'
 
 ```
 
-RETRIEVES THE FIRST AVILABLE ORDER IN THE INTEGRATION QUEUE. AFTER PROCESSING THE ORDER, IT MUST BE REMOVED FROM THE INTEGRATION QUEUE WITHIN 5 MINUTES (OR IT WILL RETURN TO THE BEGINNING OF THE QUEUE).
+<aside class="notice">https://api.skyhub.com.br/queues/orders</aside>
 
-### [DEL] Remove a request from the queue – https://api.skyhub.com.br/queues/orders/{code}
+Retrieves the first available order in the integration queue. After processing the order, it must be removed from the integration queue within 5 minutes (or it will return to the beginning of the queue).
 
-```curl
+Header Parameters       | Type      | Required      | Description                               | Example
+------------------------|-----------|---------------|-------------------------------------------|------------------------------
+**accept**              | string    | required      |                                           | application/json
+**content-type**        | string    | required      |                                           | application/json
+**x-accountmanager-key**| string    | required      | Identifier your integration with a SkyHub | your account manager key here
+**x-api-key**           | string    | required      |                                           | your api key here
+**x-user-email**        | string    | required      |                                           | your user email here
+
+### [DEL] Remove a request from the queue
+
+```shell
 
 curl --request DELETE \ 
---url https://api.skyhub.com.br/queues/orders/Lojas Americanas-266065081401 \ 
+--url 'https://api.skyhub.com.br/queues/orders/Lojas Americanas-266065081401' \ 
 --header 'accept: application/json' \ 
 --header 'content-type: application/json ' \ 
 --header 'x-accountmanager-key: pmcell@2017 ' \ 
---header 'x-api-key: 4NoZrnxsSckMWHi15syh ' \ 
---header 'x-user-email: ti@hariexpress.com.br ' \
+--header 'x-api-key: 4NoZrnxsSckMWHi15syh' \ 
+--header 'x-user-email: ti@hariexpress.com.br' \
 --data {
   "shipment_exception": {
     "occurrence_date": "2012-10-06T04:13:00-03:00",
@@ -806,4 +1246,19 @@ curl --request DELETE \
 
 ```
 
-REMOVES AN ORDER FROM THE INTEGRATION QUEUE
+<aside class="notice">https://api.skyhub.com.br/queues/orders/{code}</aside>
+
+Removes an order from the integration queue.
+
+Path Parameters         | Type      | Required      | Description                | Example
+------------------------|-----------|---------------|----------------------------|----------------------
+**code**                | string    | required      | request code               | foo
+
+Header Parameters       | Type      | Required      | Description                               | Example
+------------------------|-----------|---------------|-------------------------------------------|------------------------------
+**accept**              | string    | required      |                                           | application/json
+**content-type**        | string    | required      |                                           | application/json
+**x-accountmanager-key**| string    | required      | Identifier your integration with a SkyHub | your account manager key here
+**x-api-key**           | string    | required      |                                           | your api key here
+**x-user-email**        | string    | required      |                                           | your user email here
+
