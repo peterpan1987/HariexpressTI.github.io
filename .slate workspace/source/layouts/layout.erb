@@ -82,6 +82,8 @@ under the License.
                       <% methodType = methodTag.sub("[","").sub("]","") %>
                       <% requestTitle = h2[:content].to_s.sub(methodTag, "") %>
 
+                      <% page_content = page_content.to_s.sub(methodTag, '<spam id="method-body" class="method-' + methodType.downcase + '">' + methodType + '</spam>') %>
+
                       <a href="#<%= h2[:id] %>" class="toc-h2 toc-link" data-title="<%= requestTitle %>">
                         <spam id="method" class="method-<%= methodType.downcase %>"><%= methodType %></spam><%= requestTitle %>
                       </a>
@@ -97,6 +99,8 @@ under the License.
                               <% methodTag = h3[:title][/\[(.*?)\]/] %>
                               <% methodType = methodTag.sub("[","").sub("]","") %>
                               <% requestTitle = h3[:content].to_s.sub(methodTag, "") %>
+
+                              <% page_content = page_content.to_s.sub(methodTag, '<spam id="method-body" class="method-' + methodType.downcase + '">' + methodType + '</spam>') %>
 
                               <a href="#<%= h3[:id] %>" class="toc-h3 toc-link" data-title="<%= requestTitle %>">
                                 <spam id="method" class="method-<%= methodType.downcase %>"><%= methodType %></spam><%= requestTitle %>

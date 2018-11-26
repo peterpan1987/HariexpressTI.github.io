@@ -50,22 +50,36 @@ html, body {
   margin-right: 5px;
   border-radius: 10px;
   font-size: 10px;
+  color: white;
+  background-color: #464646;
+}
+
+#method-body {
+  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-left: 9px;
+  padding-right: 9px;
+  margin-right: 5px;
+  border-radius: 15px;
+  font-size: 12px;
+  color: white;
+  background-color: #464646;
 }
 
 .method-get {
-  background-color: #268d66;
+  background-color: #268d66 !important;
 }
 
 .method-post {
-  background-color: #cd9309;
+  background-color: #cd9309 !important;
 }
 
 .method-put {
-  background-color: #0d72d7;
+  background-color: #0d72d7 !important;
 }
 
 .method-del {
-  background-color: #aa3f3d;
+  background-color: #aa3f3d !important;
 }
 
 #toc > ul > li > a > span {
@@ -192,6 +206,12 @@ html, body {
   }
 
   .toc-list-h2 {
+    display: none;
+    background-color: $nav-subitem-bg;
+    font-weight: 500;
+  }
+
+  .toc-list-h3 {
     display: none;
     background-color: $nav-subitem-bg;
     font-weight: 500;
@@ -373,7 +393,7 @@ html, body {
   }
 
   // the div is the tocify hidden div for placeholding stuff
-  &>h1, &>h2, &>div {
+  &>h1, &>h2, &>h3, &>div {
     clear:both;
   }
 
