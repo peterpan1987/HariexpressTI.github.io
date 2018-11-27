@@ -1115,7 +1115,8 @@ Header Parameters       | Type      | Required      | Description               
 **x-api-key**           | string    | required      |                                           | your api key here
 **x-user-email**        | string    | required      |                                           | your user email here
 
-### [POST] CREATE A PRODUCT WITH PRICE VARIATION IN THE SKU
+### [POST] Create a product with price variation in the SKU
+           
 
 ```shell
 
@@ -1253,6 +1254,139 @@ Removes an order from the integration queue.
 Path Parameters         | Type      | Required      | Description                | Example
 ------------------------|-----------|---------------|----------------------------|----------------------
 **code**                | string    | required      | request code               | foo
+
+Header Parameters       | Type      | Required      | Description                               | Example
+------------------------|-----------|---------------|-------------------------------------------|------------------------------
+**accept**              | string    | required      |                                           | application/json
+**content-type**        | string    | required      |                                           | application/json
+**x-accountmanager-key**| string    | required      | Identifier your integration with a SkyHub | your account manager key here
+**x-api-key**           | string    | required      |                                           | your api key here
+**x-user-email**        | string    | required      |                                           | your user email here
+
+## Variations
+
+### [GET] List variations
+
+```shell
+
+curl --request GET \ 
+--url 'https://api.skyhub.com.br/variations/11523320276779' \ 
+--header 'accept: application/json' \ 
+--header 'content-type: application/json ' \ 
+--header 'x-accountmanager-key: pmcell@2017' \ 
+--header 'x-api-key: 4NoZrnxsSckMWHi15syh' \ 
+--header 'x-user-email: ti@hariexpress.com.br'
+
+```
+
+<aside class="notice">https://api.skyhub.com.br/variations/{sku}</aside>
+
+See variation list.
+
+Header Parameters       | Type      | Required      | Description                               | Example
+------------------------|-----------|---------------|-------------------------------------------|------------------------------
+**accept**              | string    | required      |                                           | application/json
+**content-type**        | string    | required      |                                           | application/json
+**x-accountmanager-key**| string    | required      | Identifier your integration with a SkyHub | your account manager key here
+**x-api-key**           | string    | required      |                                           | your api key here
+**x-user-email**        | string    | required      |                                           | your user email here
+
+### [PUT] Update a variation
+
+```shell
+
+curl --request PUT \ 
+--url 'https://api.skyhub.com.br/variations/11523320276779' \ 
+--header 'accept: application/json' \ 
+--header 'content-type: application/json ' \ 
+--header 'x-accountmanager-key: pmcell@2017' \ 
+--header 'x-api-key: 4NoZrnxsSckMWHi15syh' \ 
+--header 'x-user-email: ti@hariexpress.com.br' \
+--data {
+  "variation": {
+    "qty": 10000,
+    "ean": "foo",
+    "images": [
+      "foo",
+      "foo",
+      "foo"
+    ],
+    "specifications": [
+      {
+        "key": "price",
+        "value": "350.00"
+      }
+    ]
+  }
+}
+
+```
+
+<aside class="notice">https://api.skyhub.com.br/variations/{sku}</aside>
+
+See variation list.
+
+Header Parameters       | Type      | Required      | Description                               | Example
+------------------------|-----------|---------------|-------------------------------------------|------------------------------
+**accept**              | string    | required      |                                           | application/json
+**content-type**        | string    | required      |                                           | application/json
+**x-accountmanager-key**| string    | required      | Identifier your integration with a SkyHub | your account manager key here
+**x-api-key**           | string    | required      |                                           | your api key here
+**x-user-email**        | string    | required      |                                           | your user email here
+
+### [DEL] Delete a variation
+
+```shell
+
+curl --request DEL \ 
+--url 'https://api.skyhub.com.br/variations/11523320276779' \ 
+--header 'accept: application/json' \ 
+--header 'content-type: application/json ' \ 
+--header 'x-accountmanager-key: pmcell@2017' \ 
+--header 'x-api-key: 4NoZrnxsSckMWHi15syh' \ 
+--header 'x-user-email: ti@hariexpress.com.br'
+
+```
+
+<aside class="notice">https://api.skyhub.com.br/variations/{sku}</aside>
+
+See variation list.
+
+Header Parameters       | Type      | Required      | Description                               | Example
+------------------------|-----------|---------------|-------------------------------------------|------------------------------
+**accept**              | string    | required      |                                           | application/json
+**content-type**        | string    | required      |                                           | application/json
+**x-accountmanager-key**| string    | required      | Identifier your integration with a SkyHub | your account manager key here
+**x-api-key**           | string    | required      |                                           | your api key here
+**x-user-email**        | string    | required      |                                           | your user email here
+
+### [PUT] Update Price of Change
+
+```shell
+
+curl --request PUT \ 
+--url 'https://api.skyhub.com.br/variations/11523320276779' \ 
+--header 'accept: application/json' \ 
+--header 'content-type: application/json ' \ 
+--header 'x-accountmanager-key: pmcell@2017' \ 
+--header 'x-api-key: 4NoZrnxsSckMWHi15syh' \ 
+--header 'x-user-email: ti@hariexpress.com.br' \
+--data {
+  "variation": {
+    "specifications": [
+      {
+        "key": "price",
+        "value": "1.00"
+      }
+    ]
+  }
+}
+
+```
+
+<aside class="notice">https://api.skyhub.com.br/variations/{sku}</aside>
+
+See variation list.
 
 Header Parameters       | Type      | Required      | Description                               | Example
 ------------------------|-----------|---------------|-------------------------------------------|------------------------------
